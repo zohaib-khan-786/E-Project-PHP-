@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "mdb-ui-kit": "^7.3.0"
+  }
+}

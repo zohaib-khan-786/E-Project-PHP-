@@ -1,0 +1,35 @@
+Admin
+     Login
+     New courier ✅
+     View all courier details ✅
+     Send SMS – From to ❌
+     Send delivery SMS ❌
+     Update/ delete courier ✅
+     Create agent ✅
+     Manage agent ✅
+     Manage customer details ✅
+     Status count ✅
+     Download report for shipment ✅
+
+
+
+
+
+
+
+
+
+Agent
+     Login
+     New courier
+     View all courier details
+     Send SMS From to
+     Send delivery SMS
+     Status of branch
+     Download report from branch
+User
+     Register
+     Login
+     Track consignment number
+     View status
+     Print status
