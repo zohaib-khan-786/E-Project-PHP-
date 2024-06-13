@@ -122,3 +122,11 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+#profileReportChart {
+  overflow: visible !important;
+  position: relative; 
+}
+.apexcharts-inner .apexcharts-graphical{
+  height: 100% !important;
+}

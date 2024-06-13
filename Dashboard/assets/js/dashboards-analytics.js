@@ -361,88 +361,100 @@
   fetch('../fetch_revenue_data.php')
   .then(res => res.json())
   .then(data => {
-   
     let totalRevenue = data.total_revenue;
     let growthPercentage = data.growth_percentage;
-    growthPercentage = Math.floor(growthPercentage);
-  const profileReportChartEl = document.querySelector('#profileReportChart'),
-    profileReportChartConfig = {
-      chart: {
-        height: 80,
-        // width: 175,
-        type: 'line',
-        toolbar: {
+    growthPercentage = Math.floor(growthPercentage); 
+
+    const profileReportChartEl = document.querySelector('#profileReportChart'),
+      profileReportChartConfig = {
+        chart: {
+          height: 100,
+          type: 'line',
+          toolbar: {
+            show: false
+          },
+          
+          dropShadow: {
+            enabled: true,
+            top: 10,
+            left: 5,
+            blur: 3,
+            color: config.colors.warning,
+            opacity: 0.15
+          },
+          sparkline: {
+            enabled: true
+          }
+        },
+        grid: {
+          show: false,
+          padding: {
+            right: 8
+          }
+        },
+        colors: [config.colors.warning],
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          width: 5,
+          curve: 'smooth'
+        },
+        series: [
+          {
+            data: [totalRevenue]
+          }
+        ],
+        xaxis: {
+          show: false,
+          lines: {
+            show: false
+          },
+          labels: {
+            show: false
+          },
+          axisBorder: {
+            show: false
+          }
+        },
+        yaxis: {
           show: false
         },
-        dropShadow: {
-          enabled: true,
-          top: 10,
-          left: 5,
-          blur: 3,
-          color: config.colors.warning,
-          opacity: 0.15
-        },
-        sparkline: {
-          enabled: true
-        }
-      },
-      grid: {
-        show: false,
-        padding: {
-          right: 8
-        }
-      },
-      colors: [config.colors.warning],
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        width: 5,
-        curve: 'smooth'
-      },
-      series: [
-        {
-          data: [totalRevenue]
-        }
-      ],
-      xaxis: {
-        show: false,
-        lines: {
-          show: false
-        },
-        labels: {
-          show: false
-        },
-        axisBorder: {
-          show: false
-        }
-      },
-      yaxis: {
-        show: false
-      },
-      annotations: {
-        yaxis: [{
+        annotations: {
+          yaxis: [{
             y: growthPercentage,
             borderColor: '#00E396',
             label: {
-                borderColor: '#00E396',
-                style: {
-                    color: '#fff',
-                    background: '#00E396',
-                },
-                text: 'Growth: ' + growthPercentage + '%',
+              borderColor: '#00E396',
+              style: {
+                color: '#fff',
+                background: '#00E396',
+              },
+              text: 'Growth: ' + growthPercentage + '%',
             }
-        }]
+          }]
+        }
+      };
+
+    if (typeof profileReportChartEl !== undefined && profileReportChartEl !== null) {
+      // Ensure the container has overflow visible
+      profileReportChartEl.style.overflow = 'visible';
+
+      const profileReportChart = new ApexCharts(profileReportChartEl, profileReportChartConfig);
+      profileReportChart.render();
     }
-    };
-  if (typeof profileReportChartEl !== undefined && profileReportChartEl !== null) {
-    const profileReportChart = new ApexCharts(profileReportChartEl, profileReportChartConfig);
-    profileReportChart.render();
-  }
-});
+  });
 
   // Order Statistics Chart
   // --------------------------------------------------------------------
+
+  fetch("../fetch_active_user.php")
+  .then(res => res.json())
+  .then(data => {
+    const totalUsers = data.activeUser + data.inactiveUser;
+    const activePercentage = (data.activeUser / totalUsers) * 100;
+    const inactivePercentage = (data.inactiveUser / totalUsers) * 100;
+
   const chartOrderStatistics = document.querySelector('#orderStatisticsChart'),
     orderChartConfig = {
       chart: {
@@ -450,9 +462,9 @@
         width: 130,
         type: 'donut'
       },
-      labels: ['Electronic', 'Sports', 'Decor', 'Fashion'],
-      series: [85, 15, 50, 50],
-      colors: [config.colors.primary, config.colors.secondary, config.colors.info, config.colors.success],
+      labels: ['Active', 'Inactive'],
+      series: [activePercentage, inactivePercentage,],
+      colors: [config.colors.primary, config.colors.secondary],
       stroke: {
         width: 5,
         colors: [cardColor]
@@ -504,9 +516,9 @@
                 show: true,
                 fontSize: '0.8125rem',
                 color: axisColor,
-                label: 'Weekly',
+                label: 'Total',
                 formatter: function (w) {
-                  return '38%';
+                  return totalUsers;
                 }
               }
             }
@@ -518,7 +530,7 @@
     const statisticsChart = new ApexCharts(chartOrderStatistics, orderChartConfig);
     statisticsChart.render();
   }
-
+});
   // Income Chart - Area chart
   // --------------------------------------------------------------------
   const incomeChartEl = document.querySelector('#incomeChart'),

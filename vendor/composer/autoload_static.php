@@ -9,6 +9,7 @@ class ComposerStaticInit175f515b2811e085f3258b59792b25af
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
+            'Twilio\\' => 7,
             'Tests\\PhpOffice\\Math\\' => 21,
         ),
         'P' => 
@@ -19,6 +20,10 @@ class ComposerStaticInit175f515b2811e085f3258b59792b25af
     );
 
     public static $prefixDirsPsr4 = array (
+        'Twilio\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/twilio/sdk/src/Twilio',
+        ),
         'Tests\\PhpOffice\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpoffice/math/tests/Math',

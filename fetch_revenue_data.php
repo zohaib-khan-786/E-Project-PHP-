@@ -18,7 +18,7 @@ if ($result->num_rows > 0) {
 
 // Calculate total revenue and growth
 $total_revenue = array_sum($prices);
-$previous_revenue = 0;
+$previous_revenue = -1;
 $current_year = date("Y");
 $previous_year = $current_year - 1;
 $sql = "SELECT profit FROM yearly_profit WHERE year = $previous_year";
@@ -28,11 +28,12 @@ if ($result->num_rows > 0) {
     $previous_revenue = $row['profit'];
 }
 
-$growth_percentage = 0;
+$growth_percentage = 100;
 if ($previous_revenue > 0) {
+   
     $growth_percentage = (($total_revenue - $previous_revenue) / $previous_revenue) * 100;
 } else {
-    $growth_percentage = 100; // Assuming 100% growth if there's no previous revenue
+    $growth_percentage = 100;
 }
 
 $data = array(
