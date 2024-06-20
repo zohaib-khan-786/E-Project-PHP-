@@ -2,10 +2,10 @@
 
 $currentMonth = date('F');
 
-$file = './Report/Shipment_Report_'.$currentMonth.'_2024.pdf';
+$file = "C:/xampp/htdocs/E-Project/Report/Shipment_Report_".$currentMonth."_2024.pdf";
 
 if (file_exists($file)) {
-    // Set headers to force download
+
     header('Content-Description: File Transfer');
     header('Content-Type: application/pdf');
     header('Content-Disposition: attachment; filename="' . basename($file) . '"');

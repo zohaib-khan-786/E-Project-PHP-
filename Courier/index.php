@@ -1,8 +1,28 @@
 <?php
+session_start();
 include("../connection.php");
 ob_start();
-?>
 
+if ($_SESSION["login"] != "true") {
+  header("location:../login.php");
+}
+
+ if (isset($_SESSION["agentEmail"])) {
+    $userRole = "agent";
+
+  } else if (isset($_SESSION["adminEmail"])){
+
+    $userRole = "admin";
+  }
+
+
+
+if (isset($_POST['logout'])) {
+
+  session_destroy();
+  header("location:../login.php");
+};
+?>
 
 <!DOCTYPE html>
 
@@ -125,6 +145,7 @@ ob_start();
 
           <div class="menu-inner-shadow"></div>
 
+          <!-- Sidebar -->
           <ul class="menu-inner py-1">
             <!-- Dashboards -->
             <li class="menu-item active open">
@@ -134,61 +155,58 @@ ob_start();
                 <div class="badge bg-danger rounded-pill ms-auto">5</div>
               </a>
               <ul class="menu-sub">
-              <li class="menu-item ">
+              <?php if ($userRole == "admin") { ?>
+                <li class="menu-item">
                   <a
                     href="../Dashboard/index.php"
-                    
                     class="menu-link">
                     <div data-i18n="CRM">Overview</div>
                   </a>
                 </li>
+                <?php } ?>
                 <li class="menu-item active">
                   <a
-                    href="./index.php"
-                     
+                    href="../Courier/index.php"
                     class="menu-link">
                     <div data-i18n="CRM">Add Courier</div>
                   </a>
                 </li>
                 <li class="menu-item">
-                  <a href="./courier_dets.php" class="menu-link">
+                  <a href="../Courier/courier_dets.php" class="menu-link">
                     <div data-i18n="Analytics">Courier Details</div>
                   </a>
                 </li>
-                <li class="menu-item">
-                  <a
-                    href="../Agent/create_agent.php"
-                     
-                    class="menu-link">
-                    <div data-i18n="eCommerce">Add Agent</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a
-                    href="../Agent/agent_dets.php"
-                     
-                    class="menu-link">
-                    <div data-i18n="Logistics">Manage Agent</div>
-                  </a>
-                </li>
+                <?php if ($userRole == "admin") { ?>
+                  <li class="menu-item">
+                    <a
+                      href="../Agent/create_agent.php"
+                      class="menu-link">
+                      <div data-i18n="eCommerce">Add Agent</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a
+                      href="../Agent/agent_dets.php"
+                      class="menu-link">
+                      <div data-i18n="Logistics">Manage Agent</div>
+                    </a>
+                  </li>
+                <?php } ?>
                 <li class="menu-item">
                   <a
                     href="../generate_report.php"
-                     
                     class="menu-link">
                     <div data-i18n="Academy">Download Report</div>
                   </a>
                 </li>
               </ul>
             </li>
-
-            
             <!-- Misc -->
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
             <li class="menu-item">
               <a
                 href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                 
+                
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>
                 <div data-i18n="Support">Support</div>
@@ -197,7 +215,7 @@ ob_start();
             <li class="menu-item">
               <a
                 href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/"
-                 
+                
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-file"></i>
                 <div data-i18n="Documentation">Documentation</div>
@@ -228,11 +246,11 @@ ob_start();
                 <li class="nav-item lh-1 me-3">
                   <a
                     class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
+                    href="https://github.com/zohaib-khan-786/E-Project-PHP-"
                     data-icon="octicon-star"
                     data-size="large"
                     data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    aria-label="Zohaib//Ismail"
                     >Star</a
                   >
                 </li>
@@ -254,8 +272,8 @@ ob_start();
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-medium d-block"><?php echo  $_SESSION["agentName"];?></span>
+                            <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
                       </a>
@@ -265,8 +283,14 @@ ob_start();
                     </li>
                     <li>
                       <a class="dropdown-item" href="javascript:void(0);">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
+                        <form method="POST">
+                          <span class="align-bottom d-flex">
+                            <i class="bx bx-power-off me-2 mb-0"></i>
+                              <button type="submit" name="logout" class="border-0 p-0 fw-medium">
+                                Log Out
+                              </button>
+                          </span>
+                        </form>
                       </a>
                     </li>
                   </ul>
@@ -303,7 +327,11 @@ if (isset($_POST['submit'])) {
     $payment_method = mysqli_real_escape_string($conn, $_POST['method']);
     $from_branch = mysqli_real_escape_string($conn, $_POST['from_branch']);
     $to_branch = mysqli_real_escape_string($conn, $_POST['to_branch']);
+    if ($userRole == "admin") { 
     $by_agent = mysqli_real_escape_string($conn, $_POST['by_agent']);
+    }else if($userRole == "agent"){
+    $by_agent = $_SESSION['agent_id'];
+    };
     $price = 0;
     if ($weight > 1 && $weight <= 10) {
       $price = 40;
@@ -423,16 +451,18 @@ if (isset($_POST['submit'])) {
                         </select>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="mb-3">
-                        <label class="form-label">By Agent</label>
-                        <select name="by_agent" class="form-select" required>
-                            <option selected disabled>Choose...</option>
-                            <option value="13">Agent 3</option>
-                            <option value="14">Agent 4</option>
-                        </select>
-                    </div>
-                </div>
+                <?php if ($userRole == "admin") { ?>
+                  <div class="col-lg-6">
+                      <div class="mb-3">
+                          <label class="form-label">By Agent</label>
+                          <select name="by_agent" class="form-select" required>
+                              <option selected disabled>Choose...</option>
+                              <option value="13">Agent 3</option>
+                              <option value="14">Agent 4</option>
+                          </select>
+                      </div>
+                  </div>
+                <?php };?>
             
         </div>
 

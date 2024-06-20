@@ -1,9 +1,20 @@
 <?php
 
   include ('../connection.php');
+session_start();
 
 
+  if ($_SESSION["login"] != "true") {
+    header("location:../login.php");
+  }
 
+  if (isset($_SESSION["agentEmail"])) {
+    $userRole = "agent";
+
+  } else if (isset($_SESSION["adminEmail"])){
+
+    $userRole = "admin";
+  }
 
   // Profit
 
@@ -102,6 +113,14 @@ if ($result-> num_rows > 0 ) {
 }
 
 
+
+if (isset($_POST['logout'])) {
+  session_abort();
+  session_destroy();
+  header("location:../login.php");
+};
+
+
 ?>
 
 <!DOCTYPE html>
@@ -150,6 +169,7 @@ if ($result-> num_rows > 0 ) {
 
     <!-- Helpers -->
     <script src="./assets/vendor/js/helpers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="./assets/js/config.js"></script>
@@ -308,6 +328,7 @@ if ($result-> num_rows > 0 ) {
         <div class="layout-page">
           <!-- Navbar -->
 
+          
           <nav
             class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
             id="layout-navbar">
@@ -318,18 +339,17 @@ if ($result-> num_rows > 0 ) {
             </div>
 
             <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-             
+              
 
               <ul class="navbar-nav flex-row align-items-center ms-auto">
-                <!-- Place this tag where you want the button to render. -->
+                
                 <li class="nav-item lh-1 me-3">
                   <a
                     class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
+                    href="https://github.com/zohaib-khan-786/E-Project-PHP-"
                     data-icon="octicon-star"
                     data-size="large"
-                    data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    aria-label="Zohaib//Ismail"
                     >Star</a
                   >
                 </li>
@@ -338,7 +358,13 @@ if ($result-> num_rows > 0 ) {
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar">
-                      <img src="./assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -347,12 +373,25 @@ if ($result-> num_rows > 0 ) {
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar">
-                              <img src="./assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                              <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
+                              
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-medium d-block"><?php
+                            if (isset($_SESSION['agentName'])) {
+                              echo  $_SESSION["agentName"];
+                            } else if(isset($_SESSION['adminName'])){
+                              echo $_SESSION['adminName'];
+                            }
+                             ?></span>
+                            <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
                       </a>
@@ -362,8 +401,14 @@ if ($result-> num_rows > 0 ) {
                     </li>
                     <li>
                       <a class="dropdown-item" href="javascript:void(0);">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
+                        <form method="POST">
+                          <span class="align-bottom d-flex">
+                            <i class="bx bx-power-off me-2 mb-0"></i>
+                              <button type="submit" name="logout" class="border-0 p-0 fw-medium">
+                                Log Out
+                              </button>
+                          </span>
+                        </form>
                       </a>
                     </li>
                   </ul>
@@ -676,11 +721,9 @@ if ($result-> num_rows > 0 ) {
                           </button>
                         </li>
                         <li class="nav-item">
-                          <button type="button" class="nav-link" role="tab">Expenses</button>
+                          <button type="button" class="nav-link text-muted" style="cursor: auto;" >This Week</button>
                         </li>
-                        <li class="nav-item">
-                          <button type="button" class="nav-link" role="tab">Profit</button>
-                        </li>
+                       
                       </ul>
                     </div>
                     <div class="card-body px-0">
@@ -691,26 +734,14 @@ if ($result-> num_rows > 0 ) {
                               <img src="./assets/img/icons/unicons/wallet.png" alt="User" />
                             </div>
                             <div>
-                              <small class="text-muted d-block">Total Balance</small>
+                              <small class="text-muted d-block">Total Week Balance</small>
                               <div class="d-flex align-items-center">
-                                <h6 class="mb-0 me-1">$459.10</h6>
-                                <small class="text-success fw-medium">
-                                  <i class="bx bx-chevron-up"></i>
-                                  42.9%
-                                </small>
+                                <h6 class="mb-0 me-1 current-week-price"></h6>
                               </div>
                             </div>
                           </div>
                           <div id="incomeChart"></div>
-                          <div class="d-flex justify-content-center pt-4 gap-2">
-                            <div class="flex-shrink-0">
-                              <div id="expensesOfWeek"></div>
-                            </div>
-                            <div>
-                              <p class="mb-n1 mt-1">Expenses This Week</p>
-                              <small class="text-muted">$39 less than last week</small>
-                            </div>
-                          </div>
+                         
                         </div>
                       </div>
                     </div>

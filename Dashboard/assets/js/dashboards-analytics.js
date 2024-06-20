@@ -533,15 +533,31 @@
 });
   // Income Chart - Area chart
   // --------------------------------------------------------------------
-  const incomeChartEl = document.querySelector('#incomeChart'),
-    incomeChartConfig = {
-      series: [
-        {
-          data: [24, 21, 30, 22, 42, 26, 35, 29]
-        }
-      ],
+
+  fetch('../daily_income.php')
+  .then(res => res.json())
+  .then(data => {
+
+    if (!data || Object.keys(data).length === 0) {
+      console.error('No data or incorrect data format');
+      return;
+    }
+    const seriesData = Object.keys(data).map(key => parseInt(data[key].price));
+    const categories = Object.keys(data).map(key => moment(data[key].date_created).format('ddd'));
+    const totalWeekPrice = seriesData.reduce((acc, price) => acc + price, 0);
+
+    const incomeChartEl = document.querySelector('#incomeChart');
+    if (!incomeChartEl) {
+      console.error('Chart element not found');
+      return;
+    }
+
+    const incomeChartConfig = {
+      series: [{
+        data: seriesData
+      }],
       chart: {
-        height: 215,
+        height: 250,  
         parentHeightOffset: 0,
         parentWidthOffset: 0,
         toolbar: {
@@ -564,17 +580,15 @@
         colors: 'transparent',
         strokeColors: 'transparent',
         strokeWidth: 4,
-        discrete: [
-          {
-            fillColor: config.colors.white,
-            seriesIndex: 0,
-            dataPointIndex: 7,
-            strokeColor: config.colors.primary,
-            strokeWidth: 2,
-            size: 6,
-            radius: 8
-          }
-        ],
+        discrete: [{
+          fillColor: config.colors.white,
+          seriesIndex: 0,
+          dataPointIndex: 7,
+          strokeColor: config.colors.primary,
+          strokeWidth: 2,
+          size: 6,
+          radius: 8
+        }],
         hover: {
           size: 7
         }
@@ -594,14 +608,14 @@
         borderColor: borderColor,
         strokeDashArray: 3,
         padding: {
-          top: -20,
-          bottom: -8,
-          left: -10,
-          right: 8
+          top: 10,   
+          bottom: 10, 
+          left: 10,   
+          right: 10   
         }
       },
       xaxis: {
-        categories: ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        categories: categories,
         axisBorder: {
           show: false
         },
@@ -620,15 +634,25 @@
         labels: {
           show: false
         },
-        min: 10,
-        max: 50,
+        min: Math.min(...seriesData) - 10,
+        max: Math.max(...seriesData) + 10,
         tickAmount: 4
       }
     };
-  if (typeof incomeChartEl !== undefined && incomeChartEl !== null) {
+
+    // Render the chart
     const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
+
+    const weekPriceElem = document.querySelector('.current-week-price');
+
+    weekPriceElem.innerHTML = '$'+totalWeekPrice;
+
     incomeChart.render();
-  }
+  })
+  .catch(error => {
+    console.error('Error: ', error);
+  });
+
 
   // Expenses Mini Chart - Radial Chart
   // --------------------------------------------------------------------

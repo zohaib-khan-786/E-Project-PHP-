@@ -1,13 +1,30 @@
 <?php
 
+session_start();
 
 include('../connection.php');
 
+if ($_SESSION["login"] != "true") {
+  header("location:../login.php");
+}
 
 $result = mysqli_query($conn, "SELECT * FROM courier");
 
-?>
 
+
+if (isset($_SESSION["agentEmail"])) {
+  $userRole = "agent";
+} else if (isset($_SESSION["adminEmail"])){
+  $userRole = "admin";
+}
+
+if (isset($_POST['logout'])) {
+  session_abort();
+  session_destroy();
+  header("location:../login.php");
+};
+
+?>
 
 <!DOCTYPE html>
 
@@ -114,7 +131,6 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         <!-- Menu -->
-
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
             <a href="index.html" class="app-brand-link">
@@ -177,6 +193,7 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
 
           <div class="menu-inner-shadow"></div>
 
+          <!-- Sidebar -->
           <ul class="menu-inner py-1">
             <!-- Dashboards -->
             <li class="menu-item active open">
@@ -186,61 +203,58 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
                 <div class="badge bg-danger rounded-pill ms-auto">5</div>
               </a>
               <ul class="menu-sub">
-              <li class="menu-item ">
+              <?php if ($userRole == "admin") { ?>
+                <li class="menu-item">
                   <a
                     href="../Dashboard/index.php"
-                    
                     class="menu-link">
                     <div data-i18n="CRM">Overview</div>
                   </a>
                 </li>
+                <?php } ?>
                 <li class="menu-item">
                   <a
-                    href="./index.php"
-                     
+                    href="../Courier/index.php"
                     class="menu-link">
                     <div data-i18n="CRM">Add Courier</div>
                   </a>
                 </li>
                 <li class="menu-item active">
-                  <a href="./courier_dets.php" class="menu-link">
+                  <a href="../Courier/courier_dets.php" class="menu-link">
                     <div data-i18n="Analytics">Courier Details</div>
                   </a>
                 </li>
-                <li class="menu-item">
-                  <a
-                    href="../Agent/create_agent.php"
-                     
-                    class="menu-link">
-                    <div data-i18n="eCommerce">Add Agent</div>
-                  </a>
-                </li>
-                <li class="menu-item">
-                  <a
-                    href="../Agent/agent_dets.php"
-                     
-                    class="menu-link">
-                    <div data-i18n="Logistics">Manage Agent</div>
-                  </a>
-                </li>
+                <?php if ($userRole == "admin") { ?>
+                  <li class="menu-item">
+                    <a
+                      href="../Agent/create_agent.php"
+                      class="menu-link">
+                      <div data-i18n="eCommerce">Add Agent</div>
+                    </a>
+                  </li>
+                  <li class="menu-item">
+                    <a
+                      href="../Agent/agent_dets.php"
+                      class="menu-link">
+                      <div data-i18n="Logistics">Manage Agent</div>
+                    </a>
+                  </li>
+                <?php } ?>
                 <li class="menu-item">
                   <a
                     href="../generate_report.php"
-                     
                     class="menu-link">
                     <div data-i18n="Academy">Download Report</div>
                   </a>
                 </li>
               </ul>
             </li>
-
-          
             <!-- Misc -->
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
             <li class="menu-item">
               <a
                 href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
-                 
+                
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>
                 <div data-i18n="Support">Support</div>
@@ -249,7 +263,7 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
             <li class="menu-item">
               <a
                 href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/"
-                 
+                
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-file"></i>
                 <div data-i18n="Documentation">Documentation</div>
@@ -280,11 +294,11 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
                 <li class="nav-item lh-1 me-3">
                   <a
                     class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
+                    href="https://github.com/zohaib-khan-786/E-Project-PHP-"
                     data-icon="octicon-star"
                     data-size="large"
                     data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    aria-label="Zohaib//Ismail"
                     >Star</a
                   >
                 </li>
@@ -306,8 +320,8 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-medium d-block"><?php echo  $_SESSION["agentName"];?></span>
+                            <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
                       </a>
@@ -317,8 +331,14 @@ $result = mysqli_query($conn, "SELECT * FROM courier");
                     </li>
                     <li>
                       <a class="dropdown-item" href="javascript:void(0);">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
+                        <form method="POST">
+                          <span class="align-bottom d-flex">
+                            <i class="bx bx-power-off me-2 mb-0"></i>
+                              <button type="submit" name="logout" class="border-0 p-0 fw-medium">
+                                Log Out
+                              </button>
+                          </span>
+                        </form>
                       </a>
                     </li>
                   </ul>

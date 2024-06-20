@@ -2,6 +2,11 @@
 
     include('../connection.php');
 
+    
+if ($_SESSION["login"] != "true") {
+    header("location:../login.php");
+  }
+
     $id = $_GET['agent_id'];
 
     $sql = "DELETE FROM users WHERE id = '$id'";

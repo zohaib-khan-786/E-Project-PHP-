@@ -4,6 +4,26 @@
 include('../connection.php');
 
 ob_start();
+session_start();
+
+
+if ($_SESSION["login"] != "true") {
+  header("location:../login.php");
+}
+ if (isset($_SESSION["agentEmail"])) {
+    $userRole = "agent";
+
+  } else if (isset($_SESSION["adminEmail"])){
+
+    $userRole = "admin";
+  }
+
+
+if (isset($_POST['logout'])) {
+  session_abort();
+  session_destroy();
+  header("location:../login.php");
+};
 
 ?>
 
@@ -233,11 +253,11 @@ ob_start();
                 <li class="nav-item lh-1 me-3">
                   <a
                     class="github-button"
-                    href="https://github.com/themeselection/sneat-html-admin-template-free"
+                    href="https://github.com/zohaib-khan-786/E-Project-PHP-"
                     data-icon="octicon-star"
                     data-size="large"
                     data-show-count="true"
-                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    aria-label="Zohaib//Ismail"
                     >Star</a
                   >
                 </li>
@@ -259,8 +279,8 @@ ob_start();
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block">John Doe</span>
-                            <small class="text-muted">Admin</small>
+                            <span class="fw-medium d-block"><?php echo  $_SESSION["agentName"];?></span>
+                            <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
                       </a>
@@ -270,8 +290,14 @@ ob_start();
                     </li>
                     <li>
                       <a class="dropdown-item" href="javascript:void(0);">
-                        <i class="bx bx-power-off me-2"></i>
-                        <span class="align-middle">Log Out</span>
+                        <form method="POST">
+                          <span class="align-bottom d-flex">
+                            <i class="bx bx-power-off me-2 mb-0"></i>
+                              <button type="submit" name="logout" class="border-0 p-0 fw-medium">
+                                Log Out
+                              </button>
+                          </span>
+                        </form>
                       </a>
                     </li>
                   </ul>

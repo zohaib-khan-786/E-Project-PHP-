@@ -2,6 +2,11 @@
 
     include('../connection.php');
 
+
+    if ($_SESSION["login"] != "true") {
+        header("location:../login.php");
+      }
+
     $id = $_GET['reference_id'];
 
     $sql = "DELETE FROM courier WHERE reference_id = '$id'";
