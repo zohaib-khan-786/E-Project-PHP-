@@ -1,5 +1,5 @@
 Admin
-     Login
+     Login ✅
      New courier ✅
      View all courier details ✅
      Send SMS – From to ❌
@@ -20,16 +20,16 @@ Admin
 
 
 Agent
-     Login
-     New courier
-     View all courier details
+     Login ✅
+     New courier ✅
+     View all courier details ✅
      Send SMS From to
      Send delivery SMS
      Status of branch
      Download report from branch
 User
-     Register
-     Login
-     Track consignment number
-     View status
+     Register ✅
+     Login ✅ 
+     Track consignment number ✅ 
+     View status ✅ 
      Print status

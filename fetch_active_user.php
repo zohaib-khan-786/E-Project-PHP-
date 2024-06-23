@@ -3,7 +3,7 @@
     include("./connection.php");
 
 
-    $sql = "SELECT * FROM users";
+    $sql = "SELECT * FROM users WHERE role = 'agent'";
 
     $result = $conn->query($sql);
 

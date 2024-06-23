@@ -4,8 +4,13 @@ include("../connection.php");
 ob_start();
 
 if ($_SESSION["login"] != "true") {
-  header("location:../login.php");
+  header("location:../Front-End/index.php");
 }
+
+  $sql = "SELECT * FROM users WHERE role = 'agent'";
+  $result = $conn->query($sql);
+
+
 
  if (isset($_SESSION["agentEmail"])) {
     $userRole = "agent";
@@ -16,13 +21,10 @@ if ($_SESSION["login"] != "true") {
   }
 
 
-
 if (isset($_POST['logout'])) {
-
   session_destroy();
-  header("location:../login.php");
-};
-?>
+  header("location:../Front-End/index.php");
+};?>
 
 <!DOCTYPE html>
 
@@ -259,7 +261,13 @@ if (isset($_POST['logout'])) {
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar">
-                      <img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -268,11 +276,24 @@ if (isset($_POST['logout'])) {
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar">
-                              <img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                              <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
+                              
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block"><?php echo  $_SESSION["agentName"];?></span>
+                            <span class="fw-medium d-block"><?php
+                            if (isset($_SESSION['agentName'])) {
+                              echo  $_SESSION["agentName"];
+                            } else if(isset($_SESSION['adminName'])){
+                              echo $_SESSION['adminName'];
+                            }
+                             ?></span>
                             <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
@@ -451,18 +472,21 @@ if (isset($_POST['submit'])) {
                         </select>
                     </div>
                 </div>
-                <?php if ($userRole == "admin") { ?>
-                  <div class="col-lg-6">
-                      <div class="mb-3">
-                          <label class="form-label">By Agent</label>
-                          <select name="by_agent" class="form-select" required>
-                              <option selected disabled>Choose...</option>
-                              <option value="13">Agent 3</option>
-                              <option value="14">Agent 4</option>
-                          </select>
-                      </div>
-                  </div>
-                <?php };?>
+                <?php if ($userRole == "admin") { 
+                  echo '<div class="col-lg-6">
+                  <div class="mb-3">
+                      <label class="form-label">By Agent</label>
+                      <select name="by_agent" class="form-select" required>
+                      <option selected disabled>Choose...</option>';
+                  if ($result && $result->num_rows > 0) {
+                    while($row = $result->fetch_assoc()) {
+                                echo'<option value="'.$row['id'].'">'.$row['name'].'</option>';
+                      };
+                    }
+                              echo '</select>
+                                    </div>
+                                </div>';
+                }?>
             
         </div>
 

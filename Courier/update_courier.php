@@ -7,7 +7,7 @@ session_start();
 
 
 if ($_SESSION["login"] != "true") {
-  header("location:../login.php");
+  header("location:../Front-End/index.php");
 }
 
 if (isset($_SESSION["agentEmail"])) {
@@ -15,13 +15,10 @@ if (isset($_SESSION["agentEmail"])) {
 } else if (isset($_SESSION["adminEmail"])){
   $userRole = "admin";
 }
-
 if (isset($_POST['logout'])) {
-  session_abort();
   session_destroy();
-  header("location:../login.php");
-};
-?>
+  header("location:../Front-End/index.php");
+};?>
 
 
 <!DOCTYPE html>
@@ -263,10 +260,16 @@ if (isset($_POST['logout'])) {
                 </li>
 
                 <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar">
-                      <img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -275,11 +278,24 @@ if (isset($_POST['logout'])) {
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar">
-                              <img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                              <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
+                              
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block"><?php echo  $_SESSION["agentName"];?></span>
+                            <span class="fw-medium d-block"><?php
+                            if (isset($_SESSION['agentName'])) {
+                              echo  $_SESSION["agentName"];
+                            } else if(isset($_SESSION['adminName'])){
+                              echo $_SESSION['adminName'];
+                            }
+                             ?></span>
                             <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
@@ -327,12 +343,11 @@ if (mysqli_num_rows($result) > 0) {
         $recipient_address = mysqli_real_escape_string($conn, $_POST['recipient_address']);
         $recipient_contact = mysqli_real_escape_string($conn, $_POST['recipient_contact']);
         $type = mysqli_real_escape_string($conn, $_POST['type']);
-        $weight = mysqli_real_escape_string($conn, $_POST['weight']);
-        $payment_method = mysqli_real_escape_string($conn, $_POST['method']);
+        
         $status = mysqli_real_escape_string($conn, $_POST['status']);
         $price = 100;
 
-        $query = "UPDATE courier SET sender_name='$sender_name', sender_address='$sender_address', sender_contact='$sender_contact', recipient_name='$recipient_name', recipient_address='$recipient_address', recipient_contact='$recipient_contact', type='$type',  weight='$weight', payment_method='$payment_method', price='$price', status='$status' WHERE reference_id='$courier_id'";
+        $query = "UPDATE courier SET sender_name='$sender_name', sender_address='$sender_address', sender_contact='$sender_contact', recipient_name='$recipient_name', recipient_address='$recipient_address', recipient_contact='$recipient_contact', type='$type', status='$status' WHERE reference_id='$courier_id'";
 
         if (mysqli_query($conn, $query)) {
             header('Location: courier_dets.php?id='.$courier_id);
@@ -387,15 +402,12 @@ if (mysqli_num_rows($result) > 0) {
                 <div class="row py-3">
                     <div class="col">
                         <label>Weight: </label>
-                        <input type="text" name="weight" value=<?php  echo $row['weight']; ?> class="form-control" required>
+                        <input type="text" name="weight" value=<?php  echo $row['weight']; ?> class="form-control" disabled>
                     </div>
                     <div class="col">
                     <label class="form-label">Payment Method</label>
-                        <select name="method" class="form-select" required>
-                            <option selected disabled>Choose...</option>
-                            <option value="online">Online</option>
-                            <option value="cash">Cash</option>
-                        </select>
+                    <input type="text" name="method" class="form-control" value=<?php echo $row['payment_method']?> disabled>
+                        
                     </div>
                   
                 </div>
@@ -406,9 +418,8 @@ if (mysqli_num_rows($result) > 0) {
                     <div class="mb-3">
                         <label class="form-label">Courier Type</label>
                         <select name="type" class="form-select" required>
-                            <option selected disabled>Choose...</option>
-                            <option value="pickup">Pickup</option>
-                            <option value="deliver">Deliver</option>
+                            <option value="pickup" <?php if ($row['type'] == 'pickup'){echo 'selected';}?>>Pickup</option>
+                            <option value="deliver" <?php if ($row['type'] == 'deliver'){echo 'selected';}?>>Deliver</option>
                         </select>
                     </div>
                 </div>
@@ -419,12 +430,11 @@ if (mysqli_num_rows($result) > 0) {
                     <div class="mb-3">
                         <label class="form-label">Status</label>
                         <select name="status" class="form-select" required>
-                            <option selected disabled>Choose...</option>
-                            <option value="pending">Pending</option>
-                            <option value="in_transit">In Transit</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="cancelled">Cancelled</option>
-                            <option value="returned">Returned</option>
+                            <option <?php if ($row['status'] == 'pending'){echo 'selected';}?> value="pending">Pending</option>
+                            <option <?php if ($row['status'] == 'in_transit'){echo 'selected';}?> value="in_transit">In Transit</option>
+                            <option <?php if ($row['status'] == 'delivered'){echo 'selected';}?> value="delivered">Delivered</option>
+                            <option <?php if ($row['status'] == 'cancelled'){echo 'selected';}?> value="cancelled">Cancelled</option>
+                            <option <?php if ($row['status'] == 'returned'){echo 'selected';}?> value="returned">Returned</option>
                         </select>
                     </div>
                 </div>

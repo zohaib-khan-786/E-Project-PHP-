@@ -3,9 +3,8 @@
   include ('../connection.php');
 session_start();
 
-
   if ($_SESSION["login"] != "true") {
-    header("location:../login.php");
+    header("location:../admin_login.php");
   }
 
   if (isset($_SESSION["agentEmail"])) {
@@ -115,9 +114,8 @@ if ($result-> num_rows > 0 ) {
 
 
 if (isset($_POST['logout'])) {
-  session_abort();
   session_destroy();
-  header("location:../login.php");
+  header("location:../Front-End/index.php");
 };
 
 

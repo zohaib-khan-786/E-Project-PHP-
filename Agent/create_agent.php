@@ -5,7 +5,7 @@ include('../connection.php');
 session_start();
 
 if ($_SESSION["login"] != "true") {
-  header("location:../login.php");
+  header("location:../Front-End/index.php");
 }
  if (isset($_SESSION["agentEmail"])) {
     $userRole = "agent";
@@ -19,13 +19,10 @@ if ($_SESSION["login"] != "true") {
 $result = mysqli_query($conn, "SELECT * FROM courier");
 ob_start();
 
-
 if (isset($_POST['logout'])) {
-  session_abort();
   session_destroy();
-  header("location:../login.php");
-};
-?>
+  header("location:../Front-End/index.php");
+};?>
 
 
 <!DOCTYPE html>
@@ -261,10 +258,16 @@ if (isset($_POST['logout'])) {
                 </li>
 
                 <!-- User -->
-                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar">
-                      <img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -273,11 +276,24 @@ if (isset($_POST['logout'])) {
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar">
-                              <img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                              <?php
+                                if(isset($_SESSION['adminName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/admin.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                } else if(isset($_SESSION['agentName'])){
+                                  echo '<img src="../Dashboard/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />';
+                                }
+                              ?>
+                              
                             </div>
                           </div>
                           <div class="flex-grow-1">
-                            <span class="fw-medium d-block"><?php echo  $_SESSION["agentName"];?></span>
+                            <span class="fw-medium d-block"><?php
+                            if (isset($_SESSION['agentName'])) {
+                              echo  $_SESSION["agentName"];
+                            } else if(isset($_SESSION['adminName'])){
+                              echo $_SESSION['adminName'];
+                            }
+                             ?></span>
                             <small class="text-muted"><?php echo $userRole;?></small>
                           </div>
                         </div>
