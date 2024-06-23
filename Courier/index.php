@@ -452,10 +452,10 @@ if (isset($_POST['submit'])) {
                         <label class="form-label">From Branch</label>
                         <select name="from_branch" class="form-select" required>
                             <option selected disabled>Choose...</option>
-                            <option value="1">Branch 1</option>
-                            <option value="2">Branch 2</option>
-                            <option value="3">Branch 3</option>
-                            <option value="4">Branch 4</option>
+                            <option value="1">North Nazimabad 2</option>
+                            <option value="2">Liaquatabad</option>
+                            <option value="3">Defence</option>
+                            <option value="4">Aurangi Town</option>
                         </select>
                     </div>
                 </div>
@@ -465,10 +465,10 @@ if (isset($_POST['submit'])) {
                         <label class="form-label">To Branch</label>
                         <select name="to_branch" class="form-select" required>
                             <option selected disabled>Choose...</option>
-                            <option value="1">Branch 1</option>
-                            <option value="2">Branch 2</option>
-                            <option value="3">Branch 3</option>
-                            <option value="4">Branch 4</option>
+                            <option value="1">North Nazimabad 2</option>
+                            <option value="2">Liaquatabad</option>
+                            <option value="3">Defence</option>
+                            <option value="4">Aurangi Town</option>
                         </select>
                     </div>
                 </div>

@@ -429,13 +429,16 @@ if (isset($_POST['logout'])) {
                     <div class="d-flex align-items-end row">
                       <div class="col-sm-7">
                         <div class="card-body">
-                          <h5 class="card-title text-primary">Congratulations John! 🎉</h5>
+                          <h5 class="card-title text-primary">Congratulations 
+                            <?php 
+                            if(isset($_SESSION['adminName'])){
+                              echo $_SESSION['adminName'];} 
+                            ?></h5>
                           <p class="mb-4">
-                            You have done <span class="fw-medium">72%</span> more sales today. Check your new badge in
-                            your profile.
+                            You have done <span class="fw-medium">72%</span> more sales today.
                           </p>
 
-                          <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a>
+                          
                         </div>
                       </div>
                       <div class="col-sm-5 text-center text-sm-left">
