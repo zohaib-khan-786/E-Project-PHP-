@@ -14,9 +14,9 @@
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-           if ($row['status'] == 1 && $row['role'] != 'Admin') {
+           if ($row['status'] == 1 ) {
                 $active_user += 1;
-            } else if ($row['status'] == 0 && $row['role'] != 'Admin'){
+            } else if ($row['status'] == 0 ){
                 $inactive_user += 1;
            }
         }
