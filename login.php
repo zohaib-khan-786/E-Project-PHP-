@@ -190,7 +190,8 @@ if(isset($_POST['login'])){
                     id="email"
                     name="email"
                     placeholder="Enter your email or username"
-                    autofocus />
+                    autofocus
+                    required />
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
@@ -206,13 +207,13 @@ if(isset($_POST['login'])){
                       class="form-control"
                       name="password"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password" />
+                      aria-describedby="password" required/>
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
                 </div>
                 <div class="mb-3">
                   <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="remember-me" />
+                    <input class="form-check-input" type="checkbox" id="remember-me" required/>
                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                   </div>
                 </div>

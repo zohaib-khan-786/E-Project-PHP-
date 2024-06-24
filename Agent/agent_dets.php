@@ -15,7 +15,7 @@ if ($_SESSION["login"] != "true") {
   }
 
 
-$result = mysqli_query($conn, "SELECT * FROM users");   
+$result = mysqli_query($conn, "SELECT * FROM users WHERE role = 'agent'");   
 if (isset($_POST['logout'])) {
   session_destroy();
   header("location:../Front-End/index.php");

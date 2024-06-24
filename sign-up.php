@@ -10,12 +10,16 @@ if(isset($_POST['signup'])){
   $email = $_POST['email'];
   $pass = $_POST['password'];
   $contact_temp = $_POST['contact'];
-  $contact = '92' . substr($contact_temp , 1);
+  $contact_cont = '92' . substr($contact_temp , 1);
+  echo($contact_cont);
+  $contact = intval($contact_cont);
+
+  echo($contact);
 
   $query = mysqli_query($conn,"insert into users(name,email,role,password,contact) values('$name','$email','user','$pass','$contact')");
   
   if($query){
-    header('location: login.php');
+     header('location: login.php');
    
   } else{
     echo '<label for="" class="fail">Failed</label>';
@@ -154,15 +158,16 @@ if(isset($_POST['signup'])){
                     id="username"
                     name="name"
                     placeholder="Enter your username"
-                    autofocus />
+                    autofocus 
+                    required/>
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
+                  <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" required/>
                 </div>
                 <div class="mb-3">
                   <label for="contact" class="form-label">Contact</label>
-                  <input type="number" class="form-control" id="contact" name="contact" placeholder="Enter Phone Number" />
+                  <input type="number" class="form-control" id="contact" name="contact" placeholder="Enter Phone Number" required/>
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Password</label>
@@ -173,7 +178,8 @@ if(isset($_POST['signup'])){
                       class="form-control"
                       name="password"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password" />
+                      aria-describedby="password" 
+                      required/>
                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                   </div>
                 </div>

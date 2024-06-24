@@ -339,7 +339,8 @@ if (isset($_POST['submit'])) {
 
     $sender_name = mysqli_real_escape_string($conn, $_POST['sender_name']);
     $sender_address = mysqli_real_escape_string($conn, $_POST['sender_address']);
-    $sender_contact = mysqli_real_escape_string($conn, $_POST['sender_contact']);
+    $sender_contact_temp = mysqli_real_escape_string($conn, $_POST['sender_contact']);
+    $sender_contact = '92' . substr($sender_contact_temp , 1);
     $recipient_name = mysqli_real_escape_string($conn, $_POST['recipient_name']);
     $recipient_address = mysqli_real_escape_string($conn, $_POST['recipient_address']);
     $recipient_contact = mysqli_real_escape_string($conn, $_POST['recipient_contact']);
@@ -451,11 +452,11 @@ if (isset($_POST['submit'])) {
                     <div class="mb-3">
                         <label class="form-label">From Branch</label>
                         <select name="from_branch" class="form-select" required>
-                            <option selected disabled>Choose...</option>
-                            <option value="1">North Nazimabad 2</option>
-                            <option value="2">Liaquatabad</option>
-                            <option value="3">Defence</option>
-                            <option value="4">Aurangi Town</option>
+                        <option selected disabled>Choose...</option>
+                            <option value="N. Nazimabad 2">North Nazimabad 2</option>
+                            <option value="Liaquatabad">Liaquatabad</option>
+                            <option value="Defence">Defence</option>
+                            <option value="Aurangi Town">Aurangi Town</option>
                         </select>
                     </div>
                 </div>
@@ -465,10 +466,10 @@ if (isset($_POST['submit'])) {
                         <label class="form-label">To Branch</label>
                         <select name="to_branch" class="form-select" required>
                             <option selected disabled>Choose...</option>
-                            <option value="1">North Nazimabad 2</option>
-                            <option value="2">Liaquatabad</option>
-                            <option value="3">Defence</option>
-                            <option value="4">Aurangi Town</option>
+                            <option value="N. Nazimabad 2">North Nazimabad 2</option>
+                            <option value="Liaquatabad">Liaquatabad</option>
+                            <option value="Defence">Defence</option>
+                            <option value="Aurangi Town">Aurangi Town</option>
                         </select>
                     </div>
                 </div>
