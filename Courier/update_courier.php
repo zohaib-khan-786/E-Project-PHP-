@@ -338,16 +338,18 @@ if (mysqli_num_rows($result) > 0) {
 
         $sender_name = mysqli_real_escape_string($conn, $_POST['sender_name']);
         $sender_address = mysqli_real_escape_string($conn, $_POST['sender_address']);
+        $sender_email = mysqli_real_escape_string($conn, $_POST['sender_email']);
         $sender_contact = mysqli_real_escape_string($conn, $_POST['sender_contact']);
         $recipient_name = mysqli_real_escape_string($conn, $_POST['recipient_name']);
         $recipient_address = mysqli_real_escape_string($conn, $_POST['recipient_address']);
+        $recipient_email = mysqli_real_escape_string($conn, $_POST['recipient_email']);
         $recipient_contact = mysqli_real_escape_string($conn, $_POST['recipient_contact']);
         $type = mysqli_real_escape_string($conn, $_POST['type']);
         
         $status = mysqli_real_escape_string($conn, $_POST['status']);
         $price = 100;
 
-        $query = "UPDATE courier SET sender_name='$sender_name', sender_address='$sender_address', sender_contact='$sender_contact', recipient_name='$recipient_name', recipient_address='$recipient_address', recipient_contact='$recipient_contact', type='$type', status='$status' WHERE reference_id='$courier_id'";
+        $query = "UPDATE courier SET sender_name='$sender_name', sender_address='$sender_address', sender_email='$sender_email', sender_contact='$sender_contact', recipient_name='$recipient_name', recipient_address='$recipient_address', recipient_email='$recipient_email', recipient_contact='$recipient_contact', type='$type', status='$status' WHERE reference_id='$courier_id'";
 
         if (mysqli_query($conn, $query)) {
             header('Location: courier_dets.php?id='.$courier_id);
@@ -379,6 +381,10 @@ if (mysqli_num_rows($result) > 0) {
                     <input type="text" name="sender_address" value=<?php  echo $row['sender_address']; ?>  class="form-control" required>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Sender Email</label>
+                    <input type="text" name="sender_email" value=<?php  echo $row['sender_email']; ?>  class="form-control" required>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Sender Contact</label>
                     <input type="text" name="sender_contact" value=<?php  echo $row['sender_contact']; ?> class="form-control" required>
                 </div>
@@ -391,6 +397,10 @@ if (mysqli_num_rows($result) > 0) {
                 <div class="mb-3">
                     <label class="form-label">Recipient Address</label>
                     <input type="text" name="recipient_address" value=<?php  echo $row['recipient_address']; ?> class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Recipient Email</label>
+                    <input type="text" name="recipient_email" value=<?php  echo $row['recipient_email']; ?> class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Recipient Contact</label>

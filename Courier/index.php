@@ -3,6 +3,12 @@ session_start();
 include("../connection.php");
 ob_start();
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php';
+
 if ($_SESSION["login"] != "true") {
   header("location:../Front-End/index.php");
 }
@@ -339,10 +345,12 @@ if (isset($_POST['submit'])) {
 
     $sender_name = mysqli_real_escape_string($conn, $_POST['sender_name']);
     $sender_address = mysqli_real_escape_string($conn, $_POST['sender_address']);
+    $sender_email = mysqli_real_escape_string($conn, $_POST['sender_email']);
     $sender_contact_temp = mysqli_real_escape_string($conn, $_POST['sender_contact']);
     $sender_contact = '92' . substr($sender_contact_temp , 1);
     $recipient_name = mysqli_real_escape_string($conn, $_POST['recipient_name']);
     $recipient_address = mysqli_real_escape_string($conn, $_POST['recipient_address']);
+    $recipient_email = mysqli_real_escape_string($conn, $_POST['recipient_email']);
     $recipient_contact = mysqli_real_escape_string($conn, $_POST['recipient_contact']);
     $type = mysqli_real_escape_string($conn, $_POST['type']);
     $weight = mysqli_real_escape_string($conn, $_POST['weight']);
@@ -369,10 +377,39 @@ if (isset($_POST['submit'])) {
 
     $status = 'pending';
 
-    $query = "INSERT INTO courier (reference_id, sender_name, sender_address, sender_contact, recipient_name, recipient_address, recipient_contact, type, from_branch, to_branch, placed_by, weight, payment_method, price, status) 
-              VALUES ('$courier_id', '$sender_name', '$sender_address', '$sender_contact', '$recipient_name', '$recipient_address', '$recipient_contact', '$type', '$from_branch', '$to_branch', '$by_agent', '$weight', '$payment_method', '$price', '$status')";
+    $query = "INSERT INTO courier (reference_id, sender_name, sender_address, sender_email, sender_contact, recipient_name, recipient_address, recipient_email, recipient_contact, type, from_branch, to_branch, placed_by, weight, payment_method, price, status) 
+              VALUES ('$courier_id', '$sender_name', '$sender_address', '$sender_email', '$sender_contact', '$recipient_name', '$recipient_address', '$recipient_email', '$recipient_contact', '$type', '$from_branch', '$to_branch', '$by_agent', '$weight', '$payment_method', '$price', '$status')";
 
     if (mysqli_query($conn, $query)) {
+
+      $mail = new PHPMailer(true);
+
+      $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      
+      $mail->isSMTP();                                            
+      $mail->Host       = 'smtp.gmail.com';                     
+      $mail->SMTPAuth   = true;                                   
+      $mail->Username   = 'ismailnooruddin0@gmail.com';                     
+      $mail->Password   = 'klotkcrnldaionwm';                               
+      $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            
+      $mail->Port       = 465;                                    
+  
+      $mail->setFrom('ismailnooruddin0@gmail.com', 'Admin');
+
+      $recipients = [
+        ['email' => $sender_email, 'name' => $sender_name],
+        ['email' => $recipient_email, 'name' => $recipient_name]
+      ];
+
+      foreach ($recipients as $recipient) {
+        $mail->clearAddresses(); 
+        $mail->addAddress($recipient['email'], $recipient['name']);
+
+        $mail->Subject = 'Tracking Id';
+        $mail->Body    = 'Dear ' . $recipient['name'] . '! The courier has been placed. This is the Tracking Id of this courier: ' . $courier_id;
+
+        
+        $mail->send();
+    }
         header('Location: courier_dets.php');
         exit();
     } else {
@@ -401,6 +438,10 @@ if (isset($_POST['submit'])) {
                     <input type="text" name="sender_address" class="form-control" required>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Sender Email</label>
+                    <input type="text" name="sender_email" class="form-control" required>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Sender Contact</label>
                     <input type="text" name="sender_contact" class="form-control" required>
                 </div>
@@ -413,6 +454,10 @@ if (isset($_POST['submit'])) {
                 <div class="mb-3">
                     <label class="form-label">Recipient Address</label>
                     <input type="text" name="recipient_address" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Recipient Email</label>
+                    <input type="text" name="recipient_email" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Recipient Contact</label>

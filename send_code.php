@@ -14,7 +14,7 @@ require __DIR__ . '/vendor/autoload.php';
 
 if(isset($_POST["send"])){
 
-    $number = $_POST["number"];
+    $number = '+923481809798';
 
     $message = "reference id";
     
@@ -37,11 +37,11 @@ if(isset($_POST["send"])){
 
     $response = $api->sendSmsMessage($request);
 
-    if ($response) {
-      echo "Msg sent";
-    }
+    
 
+    print_r($response);
 }
+
 
 
 

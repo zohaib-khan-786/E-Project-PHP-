@@ -12,6 +12,10 @@ $referer = $scheme . "://" . $host . $requestUri;
 $shipments = [];
 if (isset($_GET['tracking_id'])) {
 
+    if (!isset($_SESSION['usercontact'])) {
+        header('location: ./index.php');
+    }
+
     $tracking_id = $_GET['tracking_id'];
     $sendercontact = $_SESSION['usercontact'];
 
@@ -35,7 +39,7 @@ if (isset($_GET['tracking_id'])) {
     }
     $contact = $_SESSION['usercontact'];
     
-    $sql = "SELECT * FROM courier WHERE sender_contact = '$contact'";
+    $sql = "SELECT * FROM courier WHERE sender_contact = '$contact' AND status = 'delivered'";
     
     $result = $conn->query($sql);
 
