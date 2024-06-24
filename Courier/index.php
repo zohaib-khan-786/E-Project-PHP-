@@ -222,7 +222,7 @@ if (isset($_POST['logout'])) {
             </li>
             <li class="menu-item">
               <a
-                href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/"
+                href="../Documentation/CMS%20documentation.docx"
                 
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-file"></i>
