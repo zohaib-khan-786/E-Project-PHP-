@@ -9704,3 +9704,28 @@ p,
   padding: 0;
   list-style-type: none;
 }
+
+
+
+/* Table */
+
+
+.table-computer {
+  display: table;
+}
+
+.table-responsive {
+  display: none;
+}
+
+@media screen and (max-width: 770px) {
+  .table-computer {
+    display: none;
+  }
+
+  .table-responsive {
+    display: block;
+  }
+}
+
+

@@ -53,8 +53,8 @@ if (isset($_POST['track'])) {
 </head>
 
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-dark">
+   <!-- Topbar Start -->
+   <div class="container-fluid bg-dark d-none d-lg-block">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
                 <div class="d-inline-flex align-items-center text-white">
@@ -108,16 +108,17 @@ if (isset($_POST['track'])) {
             <a href="contact.php" class="nav-item nav-link">Contact</a>
         </div>
         <?php if (!isset($_SESSION['sessionName'])) { ?>
+            <a href="../login.php" class="btn btn-primary py-2 px-4 nav-link d-lg-none">Login</a>
             <a href="../login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block">Login</a>
         <?php } else { ?>
-            <form method="post" action="../logout.php">
+            <form method="post" action="../logout.php" class="d-flex">
                 <input type="hidden" name="referer" value="<?php echo htmlspecialchars($referer); ?>">
+                <button class="btn btn-primary py-2 px-4 nav-link d-lg-none" type="submit" name="logout">Logout</button>
                 <button class="btn btn-primary py-2 px-4 d-none d-lg-block" type="submit" name="logout">Logout</button>
             </form>
         <?php } ?>
     </div>
 </nav>
-    </div>
     <!-- Navbar End -->
 
 

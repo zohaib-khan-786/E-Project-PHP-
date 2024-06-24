@@ -8,9 +8,28 @@ $host = $_SERVER['HTTP_HOST'];
 $requestUri = $_SERVER['REQUEST_URI'];
 $referer = $scheme . "://" . $host . $requestUri;
 
-if (!isset($_GET['trackingid'])) {
+
+$shipments = [];
+if (isset($_GET['tracking_id'])) {
+
+    $tracking_id = $_GET['tracking_id'];
+    $sendercontact = $_SESSION['usercontact'];
+
+    $sql = "SELECT * FROM courier WHERE reference_id = '$tracking_id' AND sender_contact = '$sendercontact'";
+
+    $result = $conn->query($sql);
+    if (!$result || $result->num_rows == 0) {
+        $no_courier = '<h1 class="text-danger m-2">Sorry, you have not placed any courier</h1>';
+    }
+
+    if ($result){
+        while ($row = $result->fetch_assoc()) {
+            $shipments[] = $row;
+        }
+    }
     
-    
+} else  {
+
     if (!isset($_SESSION['usercontact'])) {
         header('location: index.php');   
     }
@@ -19,25 +38,15 @@ if (!isset($_GET['trackingid'])) {
     $sql = "SELECT * FROM courier WHERE sender_contact = '$contact'";
     
     $result = $conn->query($sql);
-    
-} else if (isset($_GET['trackingid'])) {
 
-    $tracking_id = $_GET['trackingid'];
-    $sendercontact = $_SESSION['usercontact'];
-    $sql = "SELECT * FROM courier WHERE reference_id = '$tracking_id' AND sender_contact = '$sendercontact'";
-
-    $result = $conn->query($sql);
-    if (!$result || $result->num_rows == 0) {
-        $no_courier = '<h1 class="text-danger m-2">Sorry, you have not placed any courier</h1>';
+    if ($result){
+        while ($row = $result->fetch_assoc()) {
+            $shipments[] = $row;
+        }
     }
-} else {
     
-    $no_courier = '<h1 class="text-danger m-2">Sorry, you have not placed any courier</h1>';
-
-}
-    
-    
-    ?>
+} 
+?>
 
 
 
@@ -70,7 +79,7 @@ if (!isset($_GET['trackingid'])) {
 
 <body>
     <!-- Topbar Start -->
-    <div class="container-fluid bg-dark">
+    <div class="container-fluid bg-dark d-none d-lg-block">
         <div class="row py-2 px-lg-5">
             <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
                 <div class="d-inline-flex align-items-center text-white">
@@ -114,7 +123,7 @@ if (!isset($_GET['trackingid'])) {
     </button>
     <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
         <div class="navbar-nav m-auto py-0">
-            <a href="index.php" class="nav-item nav-link ">Home</a>
+            <a href="index.php" class="nav-item nav-link">Home</a>
             <a href="about.php" class="nav-item nav-link">About</a>
             <a href="service.php" class="nav-item nav-link">Service</a>
             <a href="price.php" class="nav-item nav-link">Price</a>
@@ -124,10 +133,12 @@ if (!isset($_GET['trackingid'])) {
             <a href="contact.php" class="nav-item nav-link">Contact</a>
         </div>
         <?php if (!isset($_SESSION['sessionName'])) { ?>
+            <a href="../login.php" class="btn btn-primary py-2 px-4 nav-link d-lg-none">Login</a>
             <a href="../login.php" class="btn btn-primary py-2 px-4 d-none d-lg-block">Login</a>
         <?php } else { ?>
-            <form method="post" action="../logout.php">
+            <form method="post" action="../logout.php" class="d-flex">
                 <input type="hidden" name="referer" value="<?php echo htmlspecialchars($referer); ?>">
+                <button class="btn btn-primary py-2 px-4 nav-link d-lg-none" type="submit" name="logout">Logout</button>
                 <button class="btn btn-primary py-2 px-4 d-none d-lg-block" type="submit" name="logout">Logout</button>
             </form>
         <?php } ?>
@@ -139,7 +150,7 @@ if (!isset($_GET['trackingid'])) {
     <div class="container mt-5">
         <h1 class="mb-4">Courier Details</h1>
         
-        <table class="table table-striped">
+        <table class="table table-striped table-computer">
             <thead>
                 <tr class="text-center">
                     <th>#</th>
@@ -148,36 +159,83 @@ if (!isset($_GET['trackingid'])) {
                     <th>Recipient Name</th>
                     <th>Status</th>
                     <th>Date Placed</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php
                 if (!isset($no_courier)) {
                     
-                    if ($result->num_rows > 0) {
+                    if (count($shipments) > 0) {
                         $counter = 1;
-                        while ($row = $result->fetch_assoc()) {
+                        foreach ($shipments as $row) {
                             echo "<tr class='text-center'>
                             <td class='fw-bold'><strong>{$counter}.</strong></td>
                             <td>{$row['reference_id']}</td>
                             <td>{$row['sender_name']}</td>
                             <td>{$row['recipient_name']}</td>
-                                <td>{$row['status']}</td>
-                                <td>{$row['date_created']}</td>
-                                </tr>";
+                            <td>{$row['status']}</td>
+                            <td>{$row['date_created']}</td>
+                            <td><a class='btn btn-primary d-sm-block' href='../generate_courier_report.php?tracking_id={$row['reference_id']}'>Download Report</a></td>
+                            </tr>";
 
-                                $counter++;
-                            }
-                        } else {
-                            echo "<tr><td colspan='5'>No couriers found</td></tr>";
+                            $counter++;
                         }
+                    } else {
+                        echo "<tr><td colspan='7' class='text-center'>No couriers found</td></tr>";
+                    }
                 } else {
                     echo $no_courier;
                 }
                 ?>
             </tbody>
         </table>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="text-center">
+                        <th>#</th>
+                        <th>ID</th>
+                        <th>User Name</th>
+                        <th>Recipient Name</th>
+                        <th>Status</th>
+                        <th>Date Placed</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!isset($no_courier)) {
+                        if (count($shipments) > 0) {
+                            $counter = 1;
+                            foreach ($shipments as $row) {
+                                echo "<tr class='text-center'>
+                                <td class='fw-bold'><strong>{$counter}.</strong></td>
+                                <td>{$row['reference_id']}</td>
+                                <td>{$row['sender_name']}</td>
+                                <td>{$row['recipient_name']}</td>
+                                <td>{$row['status']}</td>
+                                <td>{$row['date_created']}</td>
+                                <td><a class='btn btn-primary d-sm-block' href='../generate_courier_report.php?tracking_id={$row['reference_id']}'>Download Report</a></td>
+                                </tr>";
+        
+                                $counter++;
+                            }
+                        } else {
+                            echo "<tr><td colspan='7' class='text-center'>No couriers found</td></tr>";
+                        }
+                    } else {
+                        echo $no_courier;
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+
     </div>
+
+    
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white mt-5 py-5 px-sm-3 px-md-5">
