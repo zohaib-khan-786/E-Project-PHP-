@@ -213,7 +213,7 @@ if (isset($_POST['logout'])) {
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
             <li class="menu-item">
               <a
-                href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                href="https://github.com/zohaib-khan-786/E-Project-PHP-/issues"
                 
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>

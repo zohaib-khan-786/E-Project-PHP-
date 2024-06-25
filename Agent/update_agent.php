@@ -209,7 +209,7 @@ if (isset($_POST['logout'])) {
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
             <li class="menu-item">
               <a
-                href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                href="https://github.com/zohaib-khan-786/E-Project-PHP-/issues"
                 target="_blank"
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>
@@ -372,10 +372,10 @@ if (isset($_POST['submit'])) {
             <div class="mb-3">
                 <label for="branch_id" class="form-label">Branch Id</label>
                 <select class="form-select" id="branch_id" name="branch_id" required>
-                    <option value="1">Branch 1</option>
-                    <option value="2">Branch 2</option>
-                    <option value="3">Branch 3</option>
-                    <option value="4">Branch 4</option>
+                    <option <?php if ($row['branch_id'] == 'N. Nazimabad 2'){echo 'selected';}?> value="N. Nazimabad 2">North Nazimabad 2</option>
+                    <option <?php if ($row['branch_id'] == 'Liaquatabad'){echo 'selected';}?> value="Liaquatabad">Liaquatabad</option>
+                    <option <?php if ($row['branch_id'] == 'Defence'){echo 'selected';}?> value="Defence">Defence</option>
+                    <option <?php if ($row['branch_id'] == 'Aurangi Town'){echo 'selected';}?> value="Aurangi Town">Aurangi Town</option>
                 </select>
             </div>
             <div class="mb-3">

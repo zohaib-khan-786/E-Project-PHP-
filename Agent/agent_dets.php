@@ -250,7 +250,7 @@ if (isset($_POST['logout'])) {
             <li class="menu-header small text-uppercase"><span class="menu-header-text">Misc</span></li>
             <li class="menu-item">
               <a
-                href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                href="https://github.com/zohaib-khan-786/E-Project-PHP-/issues"
                  
                 class="menu-link">
                 <i class="menu-icon tf-icons bx bx-support"></i>
@@ -375,6 +375,7 @@ if (isset($_POST['logout'])) {
                     <th>Agent ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Branch</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -392,6 +393,7 @@ if (isset($_POST['logout'])) {
                         echo "<td>{$row['id']}</td>";
                         echo "<td>{$row['name']}</td>";
                         echo "<td>{$row['email']}</td>";
+                        echo "<td>{$row['branch_id']}</td>";
                         echo "<td>{$row['status']}</td>";
                         echo "<td>
                         <button class='btn btn-warning btn-sm' onclick=\"updateAgent('{$row['id']}')\">Update</button>
