@@ -533,17 +533,38 @@
 });
   // Income Chart - Area chart
   // --------------------------------------------------------------------
-
+  
   fetch('../daily_income.php')
   .then(res => res.json())
   .then(data => {
-
     if (!data || Object.keys(data).length === 0) {
       console.error('No data or incorrect data format');
       return;
     }
-    const seriesData = Object.keys(data).map(key => parseInt(data[key].price));
-    const categories = Object.keys(data).map(key => moment(data[key].date_created).format('ddd'));
+
+
+
+
+    const aggregatedData = {};
+    Object.keys(data).forEach(key => {
+      const date = moment(data[key].date_created).format('ddd');
+      const price = parseInt(data[key].price);
+      if (aggregatedData[date]) {
+        aggregatedData[date] += price;
+      } else {
+        aggregatedData[date] = price;
+      }
+    });
+
+    const seriesData = [];
+    const categories = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    categories.forEach(day => {
+      seriesData.push(aggregatedData[day] || 0);
+    });
+
+
+
+
     const totalWeekPrice = seriesData.reduce((acc, price) => acc + price, 0);
 
     const incomeChartEl = document.querySelector('#incomeChart');
@@ -557,12 +578,7 @@
         data: seriesData
       }],
       chart: {
-        height: 250,  
-        parentHeightOffset: 0,
-        parentWidthOffset: 0,
-        toolbar: {
-          show: false
-        },
+        height: 250,
         type: 'area'
       },
       dataLabels: {
@@ -579,25 +595,12 @@
         size: 6,
         colors: 'transparent',
         strokeColors: 'transparent',
-        strokeWidth: 4,
-        discrete: [{
-          fillColor: config.colors.white,
-          seriesIndex: 0,
-          dataPointIndex: 7,
-          strokeColor: config.colors.primary,
-          strokeWidth: 2,
-          size: 6,
-          radius: 8
-        }],
-        hover: {
-          size: 7
-        }
+        strokeWidth: 4
       },
       colors: [config.colors.primary],
       fill: {
         type: 'gradient',
         gradient: {
-          shade: shadeColor,
           shadeIntensity: 0.6,
           opacityFrom: 0.5,
           opacityTo: 0.25,
@@ -608,10 +611,10 @@
         borderColor: borderColor,
         strokeDashArray: 3,
         padding: {
-          top: 10,   
-          bottom: 10, 
-          left: 10,   
-          right: 10   
+          top: 10,
+          bottom: 10,
+          left: 10,
+          right: 10
         }
       },
       xaxis: {
@@ -634,7 +637,7 @@
         labels: {
           show: false
         },
-        min: Math.min(...seriesData) - 10,
+        min: Math.min(...seriesData) - 10, // Adjust padding if needed
         max: Math.max(...seriesData) + 10,
         tickAmount: 4
       }
@@ -644,8 +647,11 @@
     const incomeChart = new ApexCharts(incomeChartEl, incomeChartConfig);
 
     const weekPriceElem = document.querySelector('.current-week-price');
-
-    weekPriceElem.innerHTML = '$'+totalWeekPrice;
+    if (weekPriceElem) {
+      weekPriceElem.innerHTML = '$' + totalWeekPrice;
+    } else {
+      console.error('Week price element not found');
+    }
 
     incomeChart.render();
   })
